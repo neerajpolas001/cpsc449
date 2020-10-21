@@ -5,7 +5,7 @@ response = requests.get(url)
 keysJson = response.json()
 keys = keysJson.get('keys')
 for key in keys:
-    response2 = requests.get(url + key)
+    response2 = requests.get(url + "/" + key)
     print(response2.json())
 
 

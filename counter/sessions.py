@@ -29,17 +29,31 @@ class SessionStore:
 
 class KeyValueSessionStore(SessionStore):
 
+
     def __init__(self, url, logger=None):
         super().__init__(logger)
+        self.url = url
+
+    def set_key(self, key, value):
+        self.logger.debug("set_key('%s', '%s')", key, value)
+        response = requests.post(self.url, json={key: value})
+        return response.json()
+
+    def get_key(self, key):
+        self.logger.debug("get_key('%s')", key)
+        response = requests.get(self.url + "/" + key)
+        return response.json().get(key)
+
+    def delete_key(self, key):
+        self.logger.debug("delete_key('%s')", key)
+        response = requests.delete(self.url + "/" + key)
+        return response.json()
 
 
 class ServerSideSession(CallbackDict, SessionMixin):
-
     def __init__(self, initial=None, sid=None):
-
         def on_update(self):
             self.modified = True
-
         CallbackDict.__init__(self, initial, on_update)
         self.sid = sid
         self.modified = False
